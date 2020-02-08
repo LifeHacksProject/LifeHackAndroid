@@ -1,5 +1,6 @@
 package ca.sfu.lifehackandroid;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.PendingIntent;
@@ -8,6 +9,8 @@ import android.content.IntentFilter;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +28,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Button getPath = findViewById(R.id.selectButton);
+        getPath.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent findFile = new Intent(Intent.ACTION_GET_CONTENT);
+                findFile.setType("*/*");
+                startActivityForResult(findFile, 10);
+            }
+        });
 
         Intent nfcIntent = new Intent(this, getClass());
         nfcIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -88,5 +102,21 @@ public class MainActivity extends AppCompatActivity {
         TextView textView = findViewById(R.id.linkText);
         textView.setText(builder.toString());
         siteLink = builder.toString();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 10) {
+            if (resultCode == RESULT_OK) {
+
+                String path = data.getData().getPath();
+                if (path != null) {
+                    filePath = path;
+                    TextView fileText = findViewById(R.id.fileText);
+                    fileText.setText(path);
+                }
+            }
+        }
     }
 }
