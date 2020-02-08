@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">LifeHackAndroid</string>
+    <string name="filePath">No File Selected!</string>
+    <string name="siteLink">Tap on an employer\'s NFC tag to send!</string>
 </resources>
