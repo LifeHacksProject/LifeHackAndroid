@@ -1,5 +1,6 @@
 package ca.sfu.lifehackandroid;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
     private NfcAdapter nfcAdpt;
     private PendingIntent nfcPendingIntent;
     private IntentFilter[] intentFiltersArray;
-
     private String siteLink;
     private String filePath;
 
@@ -64,6 +64,13 @@ public class MainActivity extends AppCompatActivity {
         if (!nfcAdpt.isEnabled()) {
             Toast.makeText(this, "Enable NFC before using the app", Toast.LENGTH_LONG).show();
         }
+        if(savedInstanceState != null) {
+            filePath = savedInstanceState.getString("path name");
+
+            TextView fileText = findViewById(R.id.fileText);
+            fileText.setText(filePath);
+
+        }
     }
 
     protected void onResume() {
@@ -104,17 +111,29 @@ public class MainActivity extends AppCompatActivity {
         siteLink = builder.toString();
     }
 
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString("path name", filePath);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        savedInstanceState.getString("path name");
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 10) {
             if (resultCode == RESULT_OK) {
 
-                String path = data.getData().getPath();
-                if (path != null) {
-                    filePath = path;
+                filePath = data.getData().getPath();
+                if (filePath != null) {
                     TextView fileText = findViewById(R.id.fileText);
-                    fileText.setText(path);
+                    fileText.setText(filePath);
                 }
             }
         }
