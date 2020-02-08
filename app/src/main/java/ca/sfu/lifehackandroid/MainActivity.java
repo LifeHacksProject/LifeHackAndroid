@@ -1,25 +1,37 @@
 package ca.sfu.lifehackandroid;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.File;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private NfcAdapter nfcAdpt;
     private PendingIntent nfcPendingIntent;
     private IntentFilter[] intentFiltersArray;
+
+    private StorageReference mStorageRef;
 
     private String siteLink;
     private String filePath;
@@ -28,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mStorageRef = FirebaseStorage.getInstance().getReference();
 
         Button getPath = findViewById(R.id.selectButton);
         getPath.setOnClickListener(new View.OnClickListener() {
@@ -102,6 +116,30 @@ public class MainActivity extends AppCompatActivity {
         TextView textView = findViewById(R.id.linkText);
         textView.setText(builder.toString());
         siteLink = builder.toString();
+
+        uploadSelectedFile();
+    }
+
+    private void uploadSelectedFile() {
+        Uri file = Uri.fromFile(new File(filePath));
+        StorageReference ref = mStorageRef.child("folder/"+file.getLastPathSegment());
+
+        ref.putFile(file)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // Get a URL to the uploaded content
+//                        Uri downloadUrl = ref.getDownloadUrl();
+//                        Log.d("FILE UPLOADED", downloadUrl.toString());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle unsuccessful uploads
+                        // ...
+                    }
+                });
     }
 
     @Override
