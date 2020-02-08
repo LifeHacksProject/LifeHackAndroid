@@ -4,6 +4,7 @@ import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class NFCMessageParser implements NFCMessage {
         return getRecords(message.getRecords());
     }
 
-    public static List<NFCMessage> getRecords(NdefRecord[] records) {
+    private static List<NFCMessage> getRecords(NdefRecord[] records) {
         List<NFCMessage> elements = new ArrayList<NFCMessage>();
 
         for (final NdefRecord record : records) {
@@ -58,7 +59,7 @@ public class NFCMessageParser implements NFCMessage {
         return elements;
     }
 
-    public static NFCMessageParser parse(NdefRecord record) {
+    private static NFCMessageParser parse(NdefRecord record) {
 //        Preconditions.checkArgument(record.getTnf() == NdefRecord.TNF_WELL_KNOWN);
 //        Preconditions.checkArgument(Arrays.equals(record.getType(), NdefRecord.RTD_TEXT));
         try {
@@ -76,12 +77,22 @@ public class NFCMessageParser implements NFCMessage {
              *
              * Bits 5 to 0 are the length of the IANA language code.
              */
-            String textEncoding = ((payload[0] & 0200) == 0) ? "UTF-8" : "UTF-16";
-            int languageCodeLength = payload[0] & 0077;
-            String languageCode = new String(payload, 1, languageCodeLength, "US-ASCII");
-            String text =
-                    new String(payload, languageCodeLength + 1,
-                            payload.length - languageCodeLength - 1, textEncoding);
+            String textEncoding = ((payload[0] & 0x0200) == 0) ? "UTF-8" : "UTF-16";
+            int languageCodeLength = payload[0] & 0x0077;
+//            Log.d("payload 0", String.valueOf(payload[0]));
+//            Log.d("payload 1", String.valueOf(payload[1]));
+//            Log.d("payload 2", String.valueOf(payload[2]));
+//            Log.d("payload 3", String.valueOf(payload[3]));
+//            Log.d("payload 4", String.valueOf(payload[4]));
+//            Log.d("payload 5", String.valueOf(payload[5]));
+//            Log.d("payload 6", String.valueOf(payload[6]));
+//            Log.d("payload 7", String.valueOf(payload[7]));
+//            Log.d("bitmask", String.valueOf(0x0077));
+            String languageCode = new String(payload, 1, languageCodeLength, StandardCharsets.US_ASCII);
+//            Log.d("language length", String.valueOf(languageCodeLength));
+//            Log.d("payload length", String.valueOf(payload.length));
+//            Log.d("result", String.valueOf(payload.length - languageCodeLength - 1));
+            String text = new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
             return new NFCMessageParser(languageCode, text);
         } catch (UnsupportedEncodingException e) {
             // should never happen unless we get a malformed tag.
@@ -89,7 +100,7 @@ public class NFCMessageParser implements NFCMessage {
         }
     }
 
-    public static boolean isText(NdefRecord record) {
+    private static boolean isText(NdefRecord record) {
         try {
             parse(record);
             return true;
