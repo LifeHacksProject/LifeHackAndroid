@@ -19,6 +19,9 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -32,15 +35,17 @@ public class MainActivity extends AppCompatActivity {
     private IntentFilter[] intentFiltersArray;
 
     private StorageReference mStorageRef;
+    private FirebaseAuth mAuth;
 
     private String siteLink;
-    private String filePath;
+    private Uri filePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mAuth = FirebaseAuth.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
         Button getPath = findViewById(R.id.selectButton);
@@ -117,20 +122,24 @@ public class MainActivity extends AppCompatActivity {
         textView.setText(builder.toString());
         siteLink = builder.toString();
 
-        uploadSelectedFile();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            uploadSelectedFile();
+        } else {
+            signInAnonymously();
+        }
     }
 
     private void uploadSelectedFile() {
-        Uri file = Uri.fromFile(new File(filePath));
-        StorageReference ref = mStorageRef.child("folder/"+file.getLastPathSegment());
+        StorageReference ref = mStorageRef.child("resumefolder/" + filePath.getLastPathSegment());
 
-        ref.putFile(file)
+        ref.putFile(filePath)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         // Get a URL to the uploaded content
 //                        Uri downloadUrl = ref.getDownloadUrl();
-//                        Log.d("FILE UPLOADED", downloadUrl.toString());
+                        Log.d("FILE UPLOADED", filePath.getLastPathSegment());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -142,17 +151,33 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    private void signInAnonymously() {
+        mAuth.signInAnonymously()
+                .addOnSuccessListener(this, new  OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        uploadSelectedFile();
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Log.e("TAG", "signInAnonymously:FAILURE", exception);
+                    }
+                });
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 10) {
             if (resultCode == RESULT_OK) {
 
-                String path = data.getData().getPath();
+                Uri path = data.getData();
                 if (path != null) {
                     filePath = path;
                     TextView fileText = findViewById(R.id.fileText);
-                    fileText.setText(path);
+                    fileText.setText(path.getLastPathSegment());
                 }
             }
         }

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "346534893809",
+    "firebase_url": "https://systemhacks2020-a7e65.firebaseio.com",
+    "project_id": "systemhacks2020-a7e65",
+    "storage_bucket": "systemhacks2020-a7e65.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:346534893809:android:b1dac68c4648b7422d7150",
+        "android_client_info": {
+          "package_name": "ca.sfu.lifehackandroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "346534893809-r4uqtd040on97hot3rcpt8lpf4djm666.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ca.sfu.lifehackandroid",
+            "certificate_hash": "6485c1492f7227a010b6b16128d61ebe8f1c2bea"
+          }
+        },
+        {
+          "client_id": "346534893809-p80v357jvn7r775r63l4tmf8dca0ivlt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBD7nwR6SaThvg-ATiIZLxO3QfG-0ouEXI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "346534893809-p80v357jvn7r775r63l4tmf8dca0ivlt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
