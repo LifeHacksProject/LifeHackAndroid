@@ -83,11 +83,12 @@ public class MainActivity extends AppCompatActivity {
         if (!nfcAdpt.isEnabled()) {
             Toast.makeText(this, "Enable NFC before using the app", Toast.LENGTH_LONG).show();
         }
+
         if(savedInstanceState != null) {
-            filePath = savedInstanceState.getString("path name");
+            filePath = Uri.parse(savedInstanceState.getString("path name"));
 
             TextView fileText = findViewById(R.id.fileText);
-            fileText.setText(filePath);
+            fileText.setText(filePath.getPath());
 
         }
     }
@@ -177,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putString("path name", filePath);
+        outState.putString("path name", String.valueOf(filePath));
     }
 
     @Override
