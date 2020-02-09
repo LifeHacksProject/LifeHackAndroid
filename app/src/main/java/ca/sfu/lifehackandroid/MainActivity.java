@@ -83,6 +83,13 @@ public class MainActivity extends AppCompatActivity {
         if (!nfcAdpt.isEnabled()) {
             Toast.makeText(this, "Enable NFC before using the app", Toast.LENGTH_LONG).show();
         }
+        if(savedInstanceState != null) {
+            filePath = savedInstanceState.getString("path name");
+
+            TextView fileText = findViewById(R.id.fileText);
+            fileText.setText(filePath);
+
+        }
     }
 
     protected void onResume() {
@@ -165,6 +172,19 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("TAG", "signInAnonymously:FAILURE", exception);
                     }
                 });
+    }
+
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString("path name", filePath);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        savedInstanceState.getString("path name");
     }
 
     @Override
