@@ -80,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
+        assert nfcAdpt != null;
+
         if (!nfcAdpt.isEnabled()) {
             Toast.makeText(this, "Enable NFC before using the app", Toast.LENGTH_LONG).show();
         }
@@ -127,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         TextView textView = findViewById(R.id.linkText);
-        textView.setText(builder.toString());
+        textView.setText("File sent to " + builder.toString());
         siteLink = builder.toString();
 
         FirebaseUser user = mAuth.getCurrentUser();
@@ -139,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void uploadSelectedFile() {
-        StorageReference ref = mStorageRef.child("resumefolder/" + filePath.getLastPathSegment());
+        StorageReference ref = mStorageRef.child("TTT_Studios/" + filePath.getLastPathSegment());
 
         ref.putFile(filePath)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -147,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         // Get a URL to the uploaded content
 //                        Uri downloadUrl = ref.getDownloadUrl();
-                        Log.d("FILE UPLOADED", filePath.getLastPathSegment());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
