@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "346534893809-m8hocqqiem9rqhfjkpuak8e3d7dle0pk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ca.sfu.lifehackandroid",
+            "certificate_hash": "be6d4b0f55d91de3243ee3ff25ccb92598bd6504"
+          }
+        },
+        {
+          "client_id": "346534893809-h5r3grtlrpd2014o836snt2lt12dj59b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ca.sfu.lifehackandroid",
+            "certificate_hash": "c356cd4c81e2ea9a28e1d705ff31a499087c5d6e"
+          }
+        },
+        {
           "client_id": "346534893809-r4uqtd040on97hot3rcpt8lpf4djm666.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
